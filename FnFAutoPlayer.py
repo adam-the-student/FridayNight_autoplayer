@@ -7,33 +7,35 @@ import keyboard
 import mss
 import threading
 
-low_h = 100
-low_s = 25
-low_v = 2   
-high_h = 250 
-high_s = 86
-high_v = 100
+
+
+def startUp():
+    cv2.namedWindow("dst", cv2.WINDOW_NORMAL)
+    cv2.setWindowProperty("dst", cv2.WND_PROP_FULLSCREEN, cv2.WINDOW_FULLSCREEN)
+    a,b,screenWidth,screenHeight = cv2.getWindowImageRect('dst')
+    cv2.destroyWindow("dst")
+    return a,b,screenWidth,screenHeight
+
+x, y, screenHeight, screenWidth = startUp()
+print(x)
+print(y)
+print(screenHeight)
+print(screenWidth)
 
 left = 1395
-upper = 170
+upper = 160
 right = 2180
-lower = 190
+lower = 180
 ScreenGrabCoords = left, upper, right, lower  
 
 default_color = (173, 163, 135)
 pixHeight = 10
-leftPix = 56 -1
-rightPix = 770 -1 
-upPix = 540 -1 
-downPix = 315 -1
+leftPix = 56 
+rightPix = 770  
+upPix = 540  
+downPix = 315 
 
-# def draw_lines(img, lines):
-#     try:
-#         for line in lines:
-#             coords = line[0]
-#             cv2.line(img, ((coords[0]), (coords[1])), ((coords[2]), (coords[3])), [255,0,0], 3)
-#     except:
-#         pass
+
 def roi(img, vertices):
     mask = np.zeros_like(img)
     cv2.fillPoly(mask,vertices,266)
@@ -63,9 +65,9 @@ def hold_Left(hold_time):
 def hold_Right(hold_time):
     threading.Thread(target=hold_key, args=('right', hold_time)).start()
     
-    
 
 def main():
+    
     print("Press 'o' to start...")
     while not keyboard.is_pressed('o'):
         time.sleep(0.1)  # Polling interval
@@ -81,21 +83,29 @@ def main():
 
         
             #controll code         
-            if (new_screen[5,33] != default_color).any():
+            if (new_screen[5,54] != default_color).any():
                 #print(new_screen[10,20])
                 print("left")
+                # colorCheck
+                # print(new_screen[5,3])
                 hold_Left(0.1)
-            if (new_screen[10,315]!= default_color).any():
+            if (new_screen[pixHeight,296]!= default_color).any():
                 #print(new_screen[10,362])
                 print("down")
-            if (new_screen[10,540]!= default_color).any():
+                # colorCheck
+                # print(new_screen[10,296])
                 hold_Down(0.1)
+            if (new_screen[pixHeight,500]!= default_color).any():
                 #print(new_screen[10,454])
                 print("go up")
+                # colorCheck
+                # print(new_screen[10,525])
                 hold_Up(0.1)
-            if (new_screen[10,770]!= default_color).any():
+            if (new_screen[10,765]!= default_color).any():
                 #print (new_screen[10,700])
                 print("go right")
+                # colorCheck
+                # print(new_screen[10,770])
                 hold_Right(0.1)
                 
             # #insta lose 💀
@@ -127,4 +137,5 @@ def main():
                 break
             # print("FPS: {:.2f}".format(fps))
             last_time = time.time()
+#execute here \/
 main()
